@@ -13,7 +13,7 @@ A simple interactive scene with a door that can be opened and closed.
 ![](screenshot/screenshot.png)
 
 
-[Explore the scene](https://open-door-gssoyhoyrt.now.sh): this link takes you to a copy of the scene deployed to a remote server where you can interact with it just as if you were running `dcl start` locally.
+[Explore the scene](https://export-xmloisirao.now.sh): this link takes you to a copy of the scene deployed to a remote server where you can interact with it just as if you were running `dcl start` locally.
 
 **Install the CLI**
 
