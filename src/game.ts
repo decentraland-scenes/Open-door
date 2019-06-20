@@ -10,6 +10,15 @@ export class DoorState {
 // a group to keep track of all entities with a DoorState component
 const doors = engine.getComponentGroup(DoorState)
 
+// a message bus to sync state for all players
+const sceneMessageBus = new MessageBus()
+
+
+/// --- Define a custom type to pass in messages ---
+type NewDoorState = {
+	state: boolean;
+  };
+
 // a system to carry out the rotation
 export class RotatorSystem implements ISystem {
  
@@ -91,11 +100,39 @@ door.setParent(doorPivot)
 // Set the click behavior for the door
 door.addComponent(
   new OnClick(e => {
-    let state = door.getParent().getComponent(DoorState)
-    state.closed = !state.closed
+    let currentState = doorPivot.getComponent(DoorState)
+	let newState: NewDoorState = {
+		 state: !currentState.closed
+		} 
+	sceneMessageBus.emit("doorToggle", newState)
   })
 )
 
+// To execute when a door is toggled
+sceneMessageBus.on("doorToggle", (info: NewDoorState) => {
+	doorPivot.getComponent(DoorState).closed = info.state
+});
+
+// To get the initial state of the scene when joining
+sceneMessageBus.emit("getDoorState",{})
+
+// To return the initial state of the scene to new players
+sceneMessageBus.on("getDoorState", () => {
+	let currentState: NewDoorState = {
+		 state: doorPivot.getComponent(DoorState).closed
+		} 
+	sceneMessageBus.emit("doorToggle", currentState)
+});
+
+
+// ground
+let floor = new Entity()
+floor.addComponent(new GLTFShape("models/FloorBaseGrass.glb"))
+floor.addComponent(new Transform({
+  position: new Vector3(8, 0, 8), 
+  scale:new Vector3(1.6, 0.1, 1.6)
+}))
+engine.addEntity(floor)
 
 
 
