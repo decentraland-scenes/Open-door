@@ -1,42 +1,9 @@
-// custom component to handle opening and closing doors
-@Component('doorState')
-export class DoorState {
-  closed: boolean = true
-  fraction: number = 0
-  openPos: Quaternion = Quaternion.Euler(0, 90, 0)
-  closedPos: Quaternion = Quaternion.Euler(0, 0, 0)
-}
 
-// a group to keep track of all entities with a DoorState component
-const doors = engine.getComponentGroup(DoorState)
+import utils from "../node_modules/decentraland-ecs-utils/index"
 
-// a system to carry out the rotation
-export class RotatorSystem implements ISystem {
- 
-  update(dt: number) {
-    // iterate over the doors in the component group
-    for (let door of doors.entities) {
-      
-      // get some handy shortcuts
-      let state = door.getComponent(DoorState)
-      let transform = door.getComponent(Transform)
-      
-      // check if the rotation needs to be adjusted
-      if (state.closed == false && state.fraction < 1) {
-        state.fraction += dt
-        let rot = Quaternion.Slerp(state.closedPos, state.openPos, state.fraction)
-        transform.rotation = rot
-      } else if (state.closed == true && state.fraction > 0) {
-        state.fraction -= dt
-        let rot = Quaternion.Slerp(state.closedPos, state.openPos, state.fraction)
-        transform.rotation = rot
-      }
-    }
-  }
-}
 
-// Add system to engine
-engine.addSystem(new RotatorSystem())
+let openPos: Quaternion = Quaternion.Euler(0, 90, 0)
+let closedPos: Quaternion = Quaternion.Euler(0, 0, 0)
 
 // Define a reusable box shape
 let collideBox = new BoxShape()
@@ -82,17 +49,31 @@ const doorPivot = new Entity()
 doorPivot.addComponent(new Transform({
   position: new Vector3(4, 1, 3)
 }))
-doorPivot.addComponent(new DoorState())
+//doorPivot.addComponent(new DoorState())
 engine.addEntity(doorPivot)
 
 // Set the door as a child of doorPivot
 door.setParent(doorPivot)
 
+
+//toggle behavior for door
+door.addComponent(new utils.ToggleComponent(utils.ToggleState.Off, value =>{
+	if (value == utils.ToggleState.On){
+		doorPivot.addComponentOrReplace(
+			new utils.RotateTransformComponent(doorPivot.getComponent(Transform).rotation, openPos, 0.5)
+			)
+	}
+	else{
+		doorPivot.addComponentOrReplace(
+			new utils.RotateTransformComponent(doorPivot.getComponent(Transform).rotation, closedPos, 0.5)
+			)
+	}
+}))
+
 // Set the click behavior for the door
 door.addComponent(
   new OnClick(e => {
-    let state = door.getParent().getComponent(DoorState)
-    state.closed = !state.closed
+	door.getComponent(utils.ToggleComponent).toggle()
   })
 )
 
