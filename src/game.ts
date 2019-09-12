@@ -47,7 +47,8 @@ door.addComponent(doorMaterial)
 // Define wrapper entity to rotate door. This is the entity that actually rotates.
 const doorPivot = new Entity()
 doorPivot.addComponent(new Transform({
-  position: new Vector3(4, 1, 3)
+  position: new Vector3(4, 1, 3),
+  rotation: closedPos
 }))
 //doorPivot.addComponent(new DoorState())
 engine.addEntity(doorPivot)
