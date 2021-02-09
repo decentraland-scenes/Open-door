@@ -58,10 +58,11 @@ engine.addEntity(doorPivot)
 // Set the door as a child of doorPivot
 door.setParent(doorPivot)
 
-//toggle behavior for door
+//toggle behavior for doorPivot
 door.addComponent(
   new utils.ToggleComponent(utils.ToggleState.Off, (value) => {
     if (value == utils.ToggleState.On) {
+      // open
       doorPivot.addComponentOrReplace(
         new utils.RotateTransformComponent(
           doorPivot.getComponent(Transform).rotation,
@@ -70,6 +71,7 @@ door.addComponent(
         )
       )
     } else {
+      // close
       doorPivot.addComponentOrReplace(
         new utils.RotateTransformComponent(
           doorPivot.getComponent(Transform).rotation,
