@@ -1,14 +1,14 @@
 import * as utils from '@dcl/ecs-scene-utils'
 
-let openPos: Quaternion = Quaternion.Euler(0, 90, 0)
-let closedPos: Quaternion = Quaternion.Euler(0, 0, 0)
+const openPos: Quaternion = Quaternion.Euler(0, 90, 0)
+const closedPos: Quaternion = Quaternion.Euler(0, 0, 0)
 
 // Define fixed walls
 const wall1 = new Entity()
 wall1.addComponent(
   new Transform({
     position: new Vector3(5.75, 1, 3),
-    scale: new Vector3(1.5, 2, 0.05),
+    scale: new Vector3(1.5, 2, 0.05)
   })
 )
 wall1.addComponent(new BoxShape())
@@ -18,7 +18,7 @@ const wall2 = new Entity()
 wall2.addComponent(
   new Transform({
     position: new Vector3(3.25, 1, 3),
-    scale: new Vector3(1.5, 2, 0.05),
+    scale: new Vector3(1.5, 2, 0.05)
   })
 )
 wall2.addComponent(new BoxShape())
@@ -29,7 +29,7 @@ const door = new Entity()
 door.addComponent(
   new Transform({
     position: new Vector3(0.5, 0, 0),
-    scale: new Vector3(1, 2, 0.05),
+    scale: new Vector3(1, 2, 0.05)
   })
 )
 door.addComponent(new BoxShape())
@@ -49,7 +49,7 @@ const doorPivot = new Entity()
 doorPivot.addComponent(
   new Transform({
     position: new Vector3(4, 1, 3),
-    rotation: closedPos,
+    rotation: closedPos
   })
 )
 //doorPivot.addComponent(new DoorState())
@@ -61,7 +61,7 @@ door.setParent(doorPivot)
 //toggle behavior for doorPivot
 door.addComponent(
   new utils.ToggleComponent(utils.ToggleState.Off, (value) => {
-    if (value == utils.ToggleState.On) {
+    if (value === utils.ToggleState.On) {
       // open
       doorPivot.addComponentOrReplace(
         new utils.RotateTransformComponent(
